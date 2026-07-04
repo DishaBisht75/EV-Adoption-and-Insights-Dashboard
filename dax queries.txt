@@ -1,0 +1,31 @@
+Measures
+Total EV Vehicles = COUNTROWS('Electric Vehicle Data Analysis')
+Avg Electric Range = AVERAGE('Electric Vehicle Data Analysis'[Electric Range])
+CAFV Eligible % = DIVIDE(CALCULATE(COUNTROWS('Electric Vehicle Data Analysis'),'Electric Vehicle Data Analysis'[Clean Alternative Fuel Vehicle (CAFV) Eligibility]="Clean Alternative Fuel Vehicle Eligible"),COUNTROWS('Electric Vehicle Data Analysis'))
+CAFV Eligible Vehicles = CALCULATE(COUNTROWS('Electric Vehicle Data Analysis'),'Electric Vehicle Data Analysis'[Clean Alternative Fuel Vehicle (CAFV) Eligibility] = "Clean Alternative Fuel Vehicle Eligible")
+Total Vehicle Makes = DISTINCTCOUNT('Electric Vehicle Data Analysis'[Make])
+Total Cities = DISTINCTCOUNT('Electric Vehicle Data Analysis'[City])
+Total Counties = DISTINCTCOUNT('Electric Vehicle Data Analysis'[County])
+Total Utilities = DISTINCTCOUNT('Electric Vehicle Data Analysis'[Electric Utility])
+
+
+new table -> CountySummary
+
+CountySummary = 
+SUMMARIZE(
+    'Electric Vehicle Data Analysis',
+    'Electric Vehicle Data Analysis'[County],
+    "EV Count", COUNT('Electric Vehicle Data Analysis'[DOL Vehicle ID])
+)
+
+new column
+EV Count Group = 
+SWITCH(
+    TRUE(),
+    CountySummary[EV Count] <= 500, "1-500",
+    CountySummary[EV Count] <= 1000, "501-1000",
+    CountySummary[EV Count] <= 2000, "1001-2000",
+    CountySummary[EV Count] <= 5000, "2001-5000",
+    "5001+"
+)
+
